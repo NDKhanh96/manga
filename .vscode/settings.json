@@ -1,7 +1,9 @@
 {
     "cSpell.words": [
         "clsx",
+        "datasource",
         "hookform",
+        "psql",
         "tailwindcss"
     ]
 }
