@@ -1,7 +1,7 @@
 "use server";
 
 import * as zod from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { User } from '@prisma/client';
 import { registerSchema } from "@/schemas";
 import { db } from "@/lib/database";

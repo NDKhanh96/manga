@@ -4,6 +4,8 @@
         "datasource",
         "hookform",
         "psql",
-        "tailwindcss"
+        "Signin",
+        "tailwindcss",
+        "trpc"
     ]
 }
