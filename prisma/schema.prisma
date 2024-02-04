@@ -10,6 +10,7 @@
 // npx prisma init: to create schema.prisma
 // npx prisma generate: update prisma client so you can import type from that (import { User } from '@prisma/client';)
 // npx prisma db push: update database tables
+// npx prisma migrate reset: drop db, recreate db, migrate, recreate prisma client 
 
 generator client {
   provider = "prisma-client-js"
@@ -46,13 +47,20 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          UserRole  @default(USER)
   accounts      Account[]
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
 
-  @@unique([identifier, token])
+  @@unique([email, token])
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

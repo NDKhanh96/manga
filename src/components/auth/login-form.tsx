@@ -9,13 +9,14 @@ import { CardWrapper } from "~/auth/card-wrapper";
 import { Input } from "~/ui/input";
 import { Button } from "~/ui/button";
 import { FormError } from "~/form-error";
-import { FormSuccess } from "~/form-success";
 import { login } from "@/actions/login";
 import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
+    const searchParams = useSearchParams();
+    const urlError = searchParams.get("error") === 'OAuthAccountNotLinked' ? 'Email already in use with difference provider' : '';
     const [error, setError] = useState<string | undefined>('');
-    const [success, setSuccess] = useState<string | undefined>('');
     const [isPending, startTransition] = useTransition();
     const form = useForm <zod.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -27,13 +28,11 @@ export const LoginForm = () => {
 
     const onSubmit = (values: zod.infer<typeof loginSchema>) => {
         setError('');
-        setSuccess('');
 
         startTransition(() => {
             login(values)
                 .then((data) => {
-                    setError(data.error);
-                    setSuccess(data.success);
+                    setError(data?.error);
                 });
         });
     };
@@ -85,8 +84,7 @@ export const LoginForm = () => {
                             )}>
                         </FormField>
                     </div>
-                    {error && <FormError message={error} />}
-                    {success && <FormSuccess message={success} />}
+                    <FormError message={error || urlError} />
                     <Button
                         disabled={isPending}
                         type="submit"

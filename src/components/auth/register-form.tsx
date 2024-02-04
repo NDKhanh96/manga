@@ -102,8 +102,8 @@ export const RegisterForm = () => {
                             )}>
                         </FormField>
                     </div>
-                    {error && <FormError message={error} />}
-                    {success && <FormSuccess message={success} />}
+                    <FormError message={error} />
+                    <FormSuccess message={success} />
                     <Button
                         disabled={isPending}
                         type="submit"

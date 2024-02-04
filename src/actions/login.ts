@@ -5,6 +5,10 @@ import { loginSchema } from "@/schemas";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
+import { generateVerificationToken } from "@/lib/tokens";
+import { getUserByEmail } from "@/data/user";
+import type { User } from "@prisma/client";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
     const validatedField = loginSchema.safeParse(LoginValues);
@@ -14,7 +18,19 @@ export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
     }
 
     const { email, password } = validatedField.data;
+    const existingUser: User | null = await getUserByEmail(email);
 
+    if (!existingUser || !existingUser.password || !existingUser.email) {
+        return { error: "Email does not exist" };
+    }
+
+    if (!existingUser.emailVerified) {
+        const verificationToken = await generateVerificationToken(existingUser.email);
+
+        await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
+        return { error: "Please confirm the verification email!" };
+    }
     try {
         await signIn("credentials", {
             email,

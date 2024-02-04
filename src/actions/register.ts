@@ -6,6 +6,8 @@ import { User } from '@prisma/client';
 import { registerSchema } from "@/schemas";
 import { db } from "@/lib/database";
 import { getUserByEmail } from "@/data/user";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (LoginValues: zod.infer<typeof registerSchema>) => {
     const validatedField = registerSchema.safeParse(LoginValues);
@@ -30,6 +32,9 @@ export const register = async (LoginValues: zod.infer<typeof registerSchema>) =>
         }
     });
 
-    return { success: "register is success" };
+    const verificationToken = await generateVerificationToken(email);
+
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
+    return { success: "Confirmation email sent!" };
 };
-// 2 06 42
