@@ -50,7 +50,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     `;
     
     await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: 'Awesome manga by NDK <onboarding@resend.dev>',
         to: email,
         subject: "Please verify your email / Vui lòng xác nhận email của bạn",
         html: htmlContent

@@ -33,6 +33,9 @@ export const LoginForm = () => {
             login(values)
                 .then((data) => {
                     setError(data?.error);
+                })
+                .catch((error) => {
+                    setError(error?.message || error);
                 });
         });
     };
