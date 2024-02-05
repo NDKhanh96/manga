@@ -70,3 +70,12 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     });
 
 };
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+    await resend.emails.send({
+        from: 'Awesome manga by NDK <onboarding@resend.dev>',
+        to: email,
+        subject: "Two factor authentication token",
+        html: htmlContent('Two factor authentication token', 'Token', '', token)
+    });
+};

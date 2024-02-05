@@ -4,6 +4,7 @@ import { db } from "@/lib/database";
 import authConfig from "@/auth.config";
 import type { UserRole } from "@prisma/client";
 import { getUserById } from "@/data/user";
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
 declare module "next-auth" {
   // eslint-disable-next-line no-unused-vars
@@ -40,6 +41,20 @@ export const {
 
             if (!existingUser?.emailVerified) {
                 return false;
+            }
+
+            if (existingUser.isTwoFactorEnabled) {
+                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+
+                if (!twoFactorConfirmation) {
+                    return false;
+                }
+
+                await db.twoFactorConfirmation.delete({
+                    where: {
+                        id: twoFactorConfirmation.id
+                    }
+                });
             }
 
             return true;
