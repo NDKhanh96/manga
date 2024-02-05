@@ -21,3 +21,24 @@ export const generateVerificationToken = async (email: string) => {
 
     return verificationToken;
 };
+
+export const generatePasswordResetToken = async (email: string) => {
+    const token = uuid();
+    const expires = new Date(Date.now() + 15 * 60 * 1000);
+    
+    await db.passwordResetToken.deleteMany({
+        where: {
+            email
+        }
+    });
+
+    const passwordResetToken = await db.passwordResetToken.create({
+        data: {
+            email,
+            token,
+            expires
+        }
+    });
+
+    return passwordResetToken;
+};

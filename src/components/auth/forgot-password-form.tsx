@@ -1,7 +1,7 @@
 "use client";
 
 import * as zod from "zod";
-import { loginSchema } from "@/schemas";
+import { forgotPasswordSchema } from "@/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/ui/form";
@@ -9,31 +9,29 @@ import { CardWrapper } from "~/auth/card-wrapper";
 import { Input } from "~/ui/input";
 import { Button } from "~/ui/button";
 import { FormError } from "~/form-error";
-import { login } from "@/actions/login";
+import { forgotPassword } from "@/actions/forgot-password";
 import { useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { FormSuccess } from "@/components/form-success";
 
-export const LoginForm = () => {
-    const searchParams = useSearchParams();
-    const urlError = searchParams.get("error") === 'OAuthAccountNotLinked' ? 'Email already in use with difference provider' : '';
+export const ForgotPasswordForm = () => {
     const [error, setError] = useState<string | undefined>('');
+    const [success, setSuccess] = useState<string | undefined>('');
     const [isPending, startTransition] = useTransition();
-    const form = useForm <zod.infer<typeof loginSchema>>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm <zod.infer<typeof forgotPasswordSchema>>({
+        resolver: zodResolver(forgotPasswordSchema),
         defaultValues: {
             email: '',
-            password: '',
         }
     });
 
-    const onSubmit = (values: zod.infer<typeof loginSchema>) => {
+    const onSubmit = (values: zod.infer<typeof forgotPasswordSchema>) => {
         setError('');
 
         startTransition(() => {
-            login(values)
+            forgotPassword(values)
                 .then((data) => {
                     setError(data?.error);
+                    setSuccess(data?.success);
                 })
                 .catch((error) => {
                     setError(error?.message || error);
@@ -43,10 +41,9 @@ export const LoginForm = () => {
 
     return (
         <CardWrapper
-            headerLabel="Login"
-            backButtonLabel="Don't have an account"
-            backButtonHref="/auth/register"
-            showSocialLogin
+            headerLabel="Forgot your password?"
+            backButtonLabel="Back to login"
+            backButtonHref="/auth/login"
         >
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -69,38 +66,15 @@ export const LoginForm = () => {
                                 </FormItem>
                             )}>
                         </FormField>
-                        <FormField 
-                            control={form.control} 
-                            name="password" 
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input 
-                                            {...field}
-                                            disabled={isPending}
-                                            placeholder="Enter your password"
-                                            type="password"
-                                        />
-                                    </FormControl>
-                                    <Button size="sm" variant="link" asChild className="px-0 font-normal">
-                                        <Link href="/auth/forgot-password"
-                                        >
-                                            Forgot Password?
-                                        </Link>
-                                    </Button>
-                                    <FormMessage />
-                                </FormItem>
-                            )}>
-                        </FormField>
                     </div>
-                    <FormError message={error || urlError} />
+                    <FormError message={error} />
+                    <FormSuccess message={success} />
                     <Button
                         disabled={isPending}
                         type="submit"
                         className="w-full"
                     >
-                        Login
+                        Send reset email
                     </Button>
                 </form>
             </Form>

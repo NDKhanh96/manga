@@ -2,10 +2,8 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendVerificationEmail = async (email: string, token: string) => {
-    const confirmLink = `${process.env.DOMAIN}/auth/new-verification?token=${token}`;
-    
-    const htmlContent = `
+const htmlContent = (header: string, content: string, link: string, text: string) => {
+    return `
     <html>
     <head>
     <style>
@@ -41,19 +39,34 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     </head>
     <body>
     <div class="email-content">
-        <h1>Hello / Xin chào,</h1>
-        <p>Thank you for registering. Please click the link below to confirm your registration / Cảm ơn bạn đã đăng ký. Vui lòng nhấp vào liên kết dưới đây để xác nhận đăng ký của bạn:</p>
-        <a class="confirm-link" href="${confirmLink}">Confirm Registration / Xác nhận đăng ký</a>
+        <h1>${header}</h1>
+        <p>${content}:</p>
+        <a class="confirm-link" href="${link}">${text}</a>
     </div>
     </body>
     </html>
     `;
+};
+
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+    const forgotPasswordLink = `${process.env.DOMAIN}/auth/new-password?token=${token}`;
     
     await resend.emails.send({
         from: 'Awesome manga by NDK <onboarding@resend.dev>',
         to: email,
-        subject: "Please verify your email / Vui lòng xác nhận email của bạn",
-        html: htmlContent
+        subject: "Reset your password",
+        html: htmlContent('Hello', 'To confirm registration', forgotPasswordLink, 'Please click the link below to reset your password')
+    });
+};
+
+export const sendVerificationEmail = async (email: string, token: string) => {
+    const confirmLink = `${process.env.DOMAIN}/auth/new-verification?token=${token}`;
+    
+    await resend.emails.send({
+        from: 'Awesome manga by NDK <onboarding@resend.dev>',
+        to: email,
+        subject: "Please verify your email",
+        html: htmlContent('Hello', 'Thank you for registering. Please click the link below to confirm your registration', confirmLink, 'To reset your password')
     });
 
 };
