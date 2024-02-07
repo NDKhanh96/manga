@@ -1,9 +1,7 @@
-import { RegisterForm } from "~/auth/register-form";
+import { RegisterForm } from '~/auth/register-form';
 
 const RegisterPage = () => {
-    return (
-        <RegisterForm />
-    );
+    return <RegisterForm />;
 };
 
 export default RegisterPage;

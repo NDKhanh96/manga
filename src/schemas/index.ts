@@ -1,15 +1,15 @@
-import * as zod from "zod";
+import * as zod from 'zod';
 
 export const loginSchema = zod.object({
     email: zod.string().email(),
-    password: zod.string().min(1, { message: "Password is required" }),
+    password: zod.string().min(1, { message: 'Password is required' }),
     code: zod.optional(zod.string()),
 });
 
 export const registerSchema = zod.object({
     email: zod.string().email(),
-    password: zod.string().min(6, { message: "Minimum 6 characters required" }),
-    name: zod.string().min(1, { message: "Name is required" }),
+    password: zod.string().min(6, { message: 'Minimum 6 characters required' }),
+    name: zod.string().min(1, { message: 'Name is required' }),
 });
 
 export const forgotPasswordSchema = zod.object({
@@ -17,5 +17,5 @@ export const forgotPasswordSchema = zod.object({
 });
 
 export const newPasswordSchema = zod.object({
-    password: zod.string().min(6, { message: "Minimum 6 characters required" }),
+    password: zod.string().min(6, { message: 'Minimum 6 characters required' }),
 });

@@ -1,17 +1,25 @@
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { db } from "@/lib/database";
-import authConfig from "@/auth.config";
-import type { UserRole } from "@prisma/client";
-import { getUserById } from "@/data/user";
-import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
+import 'next-auth';
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { db } from '@/lib/database';
+import authConfig from '@/auth.config';
+import type { UserRole } from '@prisma/client';
+import { getUserById } from '@/data/user';
+import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
 
-declare module "next-auth" {
-  // eslint-disable-next-line no-unused-vars
-  interface User {
-    role: UserRole
-  }
+declare module 'next-auth' {
+    // eslint-disable-next-line no-unused-vars
+    interface User {
+        role: UserRole;
+    }
 }
+
+// declare module "next-auth/jwt" {
+//   // eslint-disable-next-line no-unused-vars
+//   interface JWT {
+//     role: UserRole
+//   }
+// }
 
 export const {
     handlers: { GET, POST },
@@ -20,8 +28,8 @@ export const {
     signOut,
 } = NextAuth({
     pages: {
-        signIn: "/auth/login",
-        error: "/auth/error",
+        signIn: '/auth/login',
+        error: '/auth/error',
     },
     events: {
         async linkAccount({ user }) {
@@ -29,10 +37,10 @@ export const {
                 where: { id: user.id },
                 data: { emailVerified: new Date() },
             });
-        }
+        },
     },
     callbacks: {
-        async signIn ({ user, account }) {
+        async signIn({ user, account }) {
             if (account?.provider !== 'credentials') {
                 return true;
             }
@@ -44,7 +52,8 @@ export const {
             }
 
             if (existingUser.isTwoFactorEnabled) {
-                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id);
+                const twoFactorConfirmation =
+                    await getTwoFactorConfirmationByUserId(existingUser.id);
 
                 if (!twoFactorConfirmation) {
                     return false;
@@ -52,8 +61,8 @@ export const {
 
                 await db.twoFactorConfirmation.delete({
                     where: {
-                        id: twoFactorConfirmation.id
-                    }
+                        id: twoFactorConfirmation.id,
+                    },
                 });
             }
 
@@ -71,10 +80,11 @@ export const {
             return session;
         },
         async jwt({ token, user }) {
+            // jwt() always run before session()
             if (!token.sub) {
                 return token;
             }
-            
+
             // user only available at the moment when click signed in
             if (user) {
                 token.role = user.role;
@@ -84,6 +94,6 @@ export const {
         },
     },
     adapter: PrismaAdapter(db),
-    session: { strategy: "jwt" },
+    session: { strategy: 'jwt' },
     ...authConfig,
 });

@@ -10,7 +10,7 @@
 // npx prisma init: to create schema.prisma
 // npx prisma generate: update prisma client so you can import type from that (import { User } from '@prisma/client';)
 // npx prisma db push: update database tables
-// npx prisma migrate reset: drop db, recreate db, migrate, recreate prisma client 
+// npx prisma migrate reset: drop db, recreate db, migrate, recreate prisma client
 
 generator client {
   provider = "prisma-client-js"

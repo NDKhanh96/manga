@@ -3,6 +3,7 @@
         "clsx",
         "datasource",
         "hookform",
+        "Parens",
         "psql",
         "Signin",
         "tailwindcss",
