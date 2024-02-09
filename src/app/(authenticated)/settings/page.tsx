@@ -1,14 +1,16 @@
 "use client";
 
-import { LogoutButton } from '@/components/auth/logout-button';
+import { DropdownButton } from '@/components/auth/dropdown-button';
 
 const SettingsPage = () => {
 
     return (
         <div className="bg-white p-10 rounded-xl">
-            <LogoutButton>
+            <DropdownButton
+                click={() => { }}
+            >
                 Sign out
-            </LogoutButton>
+            </DropdownButton>
         </div>
     );
 };

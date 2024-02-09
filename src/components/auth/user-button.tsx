@@ -4,11 +4,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Avatar, AvatarImage, AvatarFallback } from '~/ui/avatar';
 import { FaUser } from "react-icons/fa";
 import { useCurrentUser } from "@/custom-hooks/use-current-user";
-import { LogoutButton } from "~/auth/logout-button";
+import { DropdownButton } from "@/components/auth/dropdown-button";
 import { ExitIcon } from "@radix-ui/react-icons";
+import { GearIcon } from "@radix-ui/react-icons";
+import { signOut } from "next-auth/react";
+import { useRouter } from 'next/navigation';
 
 export const UserButton = () => {
     const user = useCurrentUser();
+    const router = useRouter();
 
     return (
         <DropdownMenu>
@@ -21,12 +25,22 @@ export const UserButton = () => {
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40" align="end">
-                <LogoutButton>
+                <DropdownButton
+                    click={() => signOut()}
+                >
                     <DropdownMenuItem>
                         <ExitIcon className="mr-2 h-4 w-4" />
                         Sign out
                     </DropdownMenuItem>
-                </LogoutButton>
+                </DropdownButton>
+                <DropdownButton
+                    click={() => router.push('/settings')}
+                >
+                    <DropdownMenuItem>
+                        <GearIcon className="mr-2 h-4 w-4" />
+                        Settings
+                    </DropdownMenuItem>
+                </DropdownButton>
             </DropdownMenuContent>
         </DropdownMenu>
     );
