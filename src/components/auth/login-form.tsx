@@ -80,6 +80,7 @@ export const LoginForm = () => {
                                         <FormControl>
                                             <Input
                                                 {...field}
+                                                value={field.value || ''}
                                                 disabled={isPending}
                                                 placeholder="Enter your two factor code"
                                             />

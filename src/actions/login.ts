@@ -21,6 +21,7 @@ import {
     createTwoFactorConfirmationByUserId,
     getTwoFactorConfirmationByUserId,
 } from '@/data/two-factor-confirmation';
+import bcrypt from 'bcryptjs';
 
 export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
     const validatedField = loginSchema.safeParse(LoginValues);
@@ -31,6 +32,12 @@ export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
 
     const { email, password, code } = validatedField.data;
     const existingUser: User | null = await getUserByEmail(email);
+    const existingUserPassword = existingUser?.password;
+    const passwordMatches = await bcrypt.compare(password, existingUserPassword as string);
+
+    if (!passwordMatches) {
+        return { error: 'Password does not match' };
+    }
 
     if (!existingUser || !existingUser.password || !existingUser.email) {
         return { error: 'Email does not exist' };
@@ -100,9 +107,9 @@ export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CredentialsSignin':
-                    return { error: 'Invalid credentials' };
+                    return { error: 'Invalid email or password' };
                 default:
-                    return { error: 'Unknown Signin error' };
+                    return { error: 'Unknown signin error' };
             }
         }
         throw error;
