@@ -4,6 +4,7 @@ import './globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth';
 import { Navbar } from '~/navbar/navbar';
+import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +22,7 @@ export default async function RootLayout({
     return (
         <SessionProvider session={session}>
             <html lang="en">
-                <body className={inter.className}>
+                <body className={cn("bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-200 to-slate-400", inter.className)}>
                     <Navbar />
                     {children}
                 </body>

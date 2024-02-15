@@ -12,7 +12,7 @@ export const Navbar = () => {
     }
 
     return (
-        <nav className="bg-secondary flex w-full items-center justify-between rounded-xl p-4 shadow-sm">
+        <nav className="bg-secondary flex w-full items-center justify-between p-4 shadow-sm">
             <div className="flex gap-x-2">
                 <Button
                     asChild
