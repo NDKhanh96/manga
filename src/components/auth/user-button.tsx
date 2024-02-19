@@ -26,14 +26,6 @@ export const UserButton = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40" align="end">
                 <DropdownButton
-                    click={() => signOut()}
-                >
-                    <DropdownMenuItem>
-                        <ExitIcon className="mr-2 h-4 w-4" />
-                        Sign out
-                    </DropdownMenuItem>
-                </DropdownButton>
-                <DropdownButton
                     click={() => router.push('/settings')}
                 >
                     <DropdownMenuItem>
@@ -41,6 +33,25 @@ export const UserButton = () => {
                         Settings
                     </DropdownMenuItem>
                 </DropdownButton>
+                {user ? (
+                <DropdownButton
+                    click={() => signOut()}
+                >
+                    <DropdownMenuItem>
+                        <ExitIcon className="mr-2 h-4 w-4" />
+                        Sign out
+                    </DropdownMenuItem>
+                </DropdownButton>
+                ) : (
+                <DropdownButton
+                    click={() => router.push('/auth/login')}
+                >
+                    <DropdownMenuItem>
+                        <ExitIcon className="mr-2 h-4 w-4" />
+                        Login/Register
+                    </DropdownMenuItem>
+                </DropdownButton>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
