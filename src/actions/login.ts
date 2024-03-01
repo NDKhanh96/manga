@@ -106,10 +106,10 @@ export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
-                case 'CredentialsSignin':
-                    return { error: 'Invalid email or password' };
-                default:
-                    return { error: 'Unknown signin error' };
+            case 'CredentialsSignin':
+                return { error: 'Invalid email or password' };
+            default:
+                return { error: 'Unknown signin error' };
             }
         }
         throw error;

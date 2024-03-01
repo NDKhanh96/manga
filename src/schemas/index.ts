@@ -19,3 +19,30 @@ export const forgotPasswordSchema = zod.object({
 export const newPasswordSchema = zod.object({
     password: zod.string().min(6, { message: 'Minimum 6 characters required' }),
 });
+
+export const settingsSchema = zod.object({
+    name: zod.string().min(1, { message: 'Name is required' }),
+    email: zod.string().email(),
+    newPassword: zod.string().optional(),
+    confirmNewPassword: zod.string().optional(),
+    isTwoFactorEnabled: zod.boolean().optional(),
+}).refine((data) => {
+    if (data.confirmNewPassword && !data.newPassword) {
+        return false;
+    }
+
+    return true;
+}, {
+    message: "New password is required!",
+    path: ["newPassword"]
+})
+    .refine((data) => {
+        if (data.newPassword && !data.confirmNewPassword) {
+            return false;
+        }
+
+        return true;
+    }, {
+        message: "Confirm new password is required!",
+        path: ["confirmNewPassword"]
+    });

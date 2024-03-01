@@ -8,11 +8,11 @@ type DropdownButtonProps = {
 export const DropdownButton: React.FC<DropdownButtonProps> = ({ children, click }) => {
     const onClick = () => {
         click();
-    }
+    };
 
     return (
         <span onClick={onClick} className="cursor-pointer">
             {children}
         </span>
     );
-}
+};

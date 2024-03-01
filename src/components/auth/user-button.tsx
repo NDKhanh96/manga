@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from '~/ui/avatar';
@@ -19,9 +19,9 @@ export const UserButton = () => {
             <DropdownMenuTrigger>
                 <Avatar>
                     <AvatarImage src={user?.image || ""} />
-                        <AvatarFallback className="bg-sky-500">
-                            <FaUser className="text-white" />
-                        </AvatarFallback>
+                    <AvatarFallback className="bg-sky-500">
+                        <FaUser className="text-white" />
+                    </AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40" align="end">
@@ -34,25 +34,25 @@ export const UserButton = () => {
                     </DropdownMenuItem>
                 </DropdownButton>
                 {user ? (
-                <DropdownButton
-                    click={() => signOut()}
-                >
-                    <DropdownMenuItem>
-                        <ExitIcon className="mr-2 h-4 w-4" />
+                    <DropdownButton
+                        click={() => signOut()}
+                    >
+                        <DropdownMenuItem>
+                            <ExitIcon className="mr-2 h-4 w-4" />
                         Sign out
-                    </DropdownMenuItem>
-                </DropdownButton>
+                        </DropdownMenuItem>
+                    </DropdownButton>
                 ) : (
-                <DropdownButton
-                    click={() => router.push('/auth/login')}
-                >
-                    <DropdownMenuItem>
-                        <ExitIcon className="mr-2 h-4 w-4" />
+                    <DropdownButton
+                        click={() => router.push('/auth/login')}
+                    >
+                        <DropdownMenuItem>
+                            <ExitIcon className="mr-2 h-4 w-4" />
                         Login/Register
-                    </DropdownMenuItem>
-                </DropdownButton>
+                        </DropdownMenuItem>
+                    </DropdownButton>
                 )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
-}
+};
