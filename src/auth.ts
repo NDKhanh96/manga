@@ -1,4 +1,5 @@
 import 'next-auth';
+import 'next-auth/jwt';
 import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/database';
@@ -6,20 +7,25 @@ import authConfig from '@/auth.config';
 import type { UserRole } from '@prisma/client';
 import { getUserById } from '@/data/user';
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
+import { getAccountByUserId } from '@/data/account';
 
 declare module 'next-auth' {
     // eslint-disable-next-line no-unused-vars
     interface User {
         role: UserRole;
+        isTwoFactorEnabled: boolean;
+        isOAuth: boolean;
     }
 }
 
-// declare module "next-auth/jwt" {
-//   // eslint-disable-next-line no-unused-vars
-//   interface JWT {
-//     role: UserRole
-//   }
-// }
+declare module "next-auth/jwt" {
+    // eslint-disable-next-line no-unused-vars
+    interface JWT {
+        role: UserRole;
+        isTwoFactorEnabled: boolean;
+        isOAuth: boolean;
+    }
+}
 
 export const {
     handlers: { GET, POST },
@@ -74,22 +80,37 @@ export const {
             }
 
             if (token.role && session.user) {
-                session.user.role = token.role as UserRole;
+                session.user.role = token.role;
+                session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+                session.user.isOAuth = token.isOAuth;
             }
 
             return session;
         },
-        async jwt({ token, user }) {
-            // jwt() always run before session()
-            if (!token.sub) {
-                return token;
+        // jwt() always run before session()
+        async jwt({ token, trigger, user, session }) {
+            if (trigger === 'update') {
+                const fieldsToUpdate = ['name', 'email', 'isTwoFactorEnabled'];
+
+                fieldsToUpdate.forEach(field => {
+                    if (session?.[field]) {
+                        token[field] = session[field];
+                    }
+                });
             }
 
             // user only available at the moment when click signed in
-            if (user) {
-                token.role = user.role;
+            if (!token.sub || !user || !user.id) {
+                return token;
             }
 
+            const existingAccount = await getAccountByUserId(user.id);
+            
+            // account only available with OAuth login user
+            token.isOAuth = !!existingAccount;
+            token.role = user.role;
+            token.isTwoFactorEnabled = user.isTwoFactorEnabled;
+            
             return token;
         },
     },

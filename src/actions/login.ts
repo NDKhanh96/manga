@@ -32,15 +32,16 @@ export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
 
     const { email, password, code } = validatedField.data;
     const existingUser: User | null = await getUserByEmail(email);
-    const existingUserPassword = existingUser?.password;
-    const passwordMatches = await bcrypt.compare(password, existingUserPassword as string);
-
-    if (!passwordMatches) {
-        return { error: 'Password does not match' };
-    }
 
     if (!existingUser || !existingUser.password || !existingUser.email) {
         return { error: 'Email does not exist' };
+    }
+
+    const existingUserPassword = existingUser.password;
+    const passwordMatches = await bcrypt.compare(password, existingUserPassword);
+
+    if (!passwordMatches) {
+        return { error: 'Password does not match' };
     }
 
     if (!existingUser.emailVerified) {
@@ -106,10 +107,10 @@ export const login = async (LoginValues: zod.infer<typeof loginSchema>) => {
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
-                case 'CredentialsSignin':
-                    return { error: 'Invalid email or password' };
-                default:
-                    return { error: 'Unknown signin error' };
+            case 'CredentialsSignin':
+                return { error: 'Invalid email or password' };
+            default:
+                return { error: 'Unknown signin error' };
             }
         }
         throw error;

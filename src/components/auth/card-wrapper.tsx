@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardFooter, CardHeader } from '~/ui/card';
 import { Header } from '~/auth/header';
-import { SocialLogin } from '~/auth/SocialLogin';
+import { SocialLogin } from '@/components/auth/social-login';
 import { BackButton } from '~/auth/back-button';
 
 type CardWrapperProps = {

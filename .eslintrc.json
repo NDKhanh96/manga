@@ -1,20 +1,6 @@
 {
-    "extends": ["next/core-web-vitals", "prettier"],
-    "plugins": ["prettier"],
+    "extends": "next/core-web-vitals",
     "rules": {
-        "prettier/prettier": [
-            "error",
-            {
-                "semi": true,
-                "trailingComma": "all",
-                "singleQuote": true,
-                "printWidth": 80,
-                "tabWidth": 4,
-                "bracketSpacing": true,
-                "jsxBracketSameLine": true,
-                "arrowParens": "avoid"
-            }
-        ],
         "react/jsx-tag-spacing": [
             "error",
             {
@@ -43,8 +29,18 @@
         "keyword-spacing": "error",
         "space-infix-ops": "error",
         "no-unused-vars": "warn",
-        "indent": ["error", 4],
-        "object-curly-spacing": ["error", "always"],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "indent": [
+            "error",
+            4
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
         "padding-line-between-statements": [
             "error",
             {
@@ -54,13 +50,25 @@
             },
             {
                 "blankLine": "always",
-                "prev": ["const", "let", "var"],
+                "prev": [
+                    "const",
+                    "let",
+                    "var"
+                ],
                 "next": "*"
             },
             {
                 "blankLine": "any",
-                "prev": ["const", "let", "var"],
-                "next": ["const", "let", "var"]
+                "prev": [
+                    "const",
+                    "let",
+                    "var"
+                ],
+                "next": [
+                    "const",
+                    "let",
+                    "var"
+                ]
             },
             {
                 "blankLine": "always",

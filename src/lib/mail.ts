@@ -57,12 +57,12 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     const forgotPasswordLink = `${process.env.DOMAIN}/auth/new-password?token=${token}`;
 
     await resend.emails.send({
-        from: 'Awesome manga by NDK <onboarding@resend.dev>',
+        from: 'Awesome manga by NDK <testingMail@ndk1996.click>',
         to: email,
         subject: 'Reset your password',
         html: htmlContent(
             'Hello',
-            'To confirm registration',
+            'To confirm reset your password,',
             forgotPasswordLink,
             'Please click the link below to reset your password',
         ),
@@ -73,21 +73,21 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     const confirmLink = `${process.env.DOMAIN}/auth/new-verification?token=${token}`;
 
     await resend.emails.send({
-        from: 'Awesome manga by NDK <onboarding@resend.dev>',
+        from: 'Awesome manga by NDK <testingMail@ndk1996.click>',
         to: email,
         subject: 'Please verify your email',
         html: htmlContent(
             'Hello',
             'Thank you for registering. Please click the link below to confirm your registration',
             confirmLink,
-            'To reset your password',
+            'To verify your email',
         ),
     });
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     await resend.emails.send({
-        from: 'Awesome manga by NDK <onboarding@resend.dev>',
+        from: 'Awesome manga by NDK <testingMail@ndk1996.click>',
         to: email,
         subject: 'Two factor authentication token',
         html: htmlContent(
