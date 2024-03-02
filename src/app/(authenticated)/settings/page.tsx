@@ -9,13 +9,15 @@ import { useForm } from 'react-hook-form';
 import { settingsSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCurrentUser } from '@/custom-hooks/use-current-user';
-import { startTransition, useTransition, useState } from 'react';
+import { useTransition, useState } from 'react';
 import { Button } from '~/ui/button';
 import { settings } from '@/actions/settings';
 import { FormError } from '~/form-error';
 import { FormSuccess } from '~/form-success';
+import { useSession } from 'next-auth/react';
 
 const SettingsPage = () => {
+    const { update } = useSession();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | undefined>();
     const [success, setSuccess] = useState<string | undefined>();
@@ -36,6 +38,8 @@ const SettingsPage = () => {
         startTransition(async () => {
             try {
                 const res = await settings(values);
+
+                update({ name: values.name, email: values.email, isTwoFactorEnabled: values.isTwoFactorEnabled });
 
                 if (res.error) {
                     setError(res.error);

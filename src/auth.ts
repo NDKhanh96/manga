@@ -32,7 +32,6 @@ export const {
     auth,
     signIn,
     signOut,
-    unstable_update,
 } = NextAuth({
     pages: {
         signIn: '/auth/login',
@@ -88,10 +87,20 @@ export const {
 
             return session;
         },
-        async jwt({ token, user }) {
+        async jwt({ token, trigger, user, session }) {
+            if (trigger === 'update') {
+                const fieldsToUpdate = ['name', 'email', 'isTwoFactorEnabled'];
+
+                fieldsToUpdate.forEach(field => {
+                    if (session?.[field]) {
+                        token[field] = session[field];
+                    }
+                });
+            }
+
             // jwt() always run before session()
             // user only available at the moment when click signed in
-            if (!token.sub  || !user || !user.id) {
+            if (!token.sub || !user || !user.id) {
                 return token;
             }
 

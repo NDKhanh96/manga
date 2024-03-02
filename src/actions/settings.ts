@@ -7,7 +7,6 @@ import { getUserByEmail, getUserById } from '@/data/user';
 import { db } from '@/lib/database';
 import { generateVerificationToken } from '@/lib/tokens';
 import { sendVerificationEmail } from '@/lib/mail';
-import { unstable_update } from '@/auth';
 
 export const settings = async (values: z.infer<typeof settingsSchema>) => {
     try {
@@ -48,21 +47,12 @@ export const settings = async (values: z.infer<typeof settingsSchema>) => {
 
         // send email confirm change password 7:25:00
         // update 7:30:00
-
-        const updatedUser = await db.user.update({
+        await db.user.update({
             where: {
                 id: user.id
             },
             data: {
                 ...values
-            }
-        });
-
-        unstable_update({
-            user: {
-                name: updatedUser.name,
-                email: updatedUser.email,
-                isTwoFactorEnabled: updatedUser.isTwoFactorEnabled
             }
         });
 
