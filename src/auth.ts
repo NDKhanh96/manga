@@ -87,6 +87,7 @@ export const {
 
             return session;
         },
+        // jwt() always run before session()
         async jwt({ token, trigger, user, session }) {
             if (trigger === 'update') {
                 const fieldsToUpdate = ['name', 'email', 'isTwoFactorEnabled'];
@@ -98,7 +99,6 @@ export const {
                 });
             }
 
-            // jwt() always run before session()
             // user only available at the moment when click signed in
             if (!token.sub || !user || !user.id) {
                 return token;
