@@ -30,7 +30,7 @@ const SettingsPage = () => {
             email: user?.email || undefined,
             newPassword: undefined,
             confirmNewPassword: undefined,
-            isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
+            isTwoFactorEnabled: user?.isTwoFactorEnabled,
         }
     }));
 
@@ -39,7 +39,7 @@ const SettingsPage = () => {
             try {
                 const res = await settings(values);
 
-                update({ name: values.name, email: values.email, isTwoFactorEnabled: values.isTwoFactorEnabled });
+                update();
 
                 if (res.error) {
                     setError(res.error);

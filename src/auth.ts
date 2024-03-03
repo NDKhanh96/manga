@@ -88,19 +88,29 @@ export const {
             return session;
         },
         // jwt() always run before session()
-        async jwt({ token, trigger, user, session }) {
+        async jwt({ token, trigger, user }) {
+            if (!token.sub) {
+                return token;
+            }
+            
             if (trigger === 'update') {
-                const fieldsToUpdate = ['name', 'email', 'isTwoFactorEnabled'];
+                const userToUpdate = await getUserById(token.sub);
 
-                fieldsToUpdate.forEach(field => {
-                    if (session?.[field]) {
-                        token[field] = session[field];
-                    }
-                });
+                if (userToUpdate?.name) {
+                    token.name = userToUpdate.name;
+                }
+
+                if (userToUpdate?.email) {
+                    token.email = userToUpdate.email;
+                }
+
+                if (userToUpdate?.isTwoFactorEnabled) {
+                    token.isTwoFactorEnabled = userToUpdate.isTwoFactorEnabled;
+                }
             }
 
             // user only available at the moment when click signed in
-            if (!token.sub || !user || !user.id) {
+            if (!user || !user.id) {
                 return token;
             }
 
