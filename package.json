@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint-fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "updateDB": "npx prisma generate && npx prisma db push"
+    "updateDB": "npx prisma generate && npx prisma db push",
+    "prisma": "npx prisma studio"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.2.0",
