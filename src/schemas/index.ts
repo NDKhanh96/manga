@@ -26,6 +26,7 @@ export const settingsSchema = zod.object({
     newPassword: zod.string().optional(),
     confirmNewPassword: zod.string().optional(),
     isTwoFactorEnabled: zod.boolean().optional(),
+    password: zod.string().min(1, { message: 'Current password is required' }),
 }).refine((data) => {
     if (data.confirmNewPassword && !data.newPassword) {
         return false;

@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from 'zod';
+import bcrypt from 'bcryptjs';
 import { settingsSchema } from '@/schemas';
 import { currentUser } from '@/lib/auth';
 import { getUserByEmail, getUserById } from '@/data/user';
@@ -22,28 +23,51 @@ export const settings = async (values: z.infer<typeof settingsSchema>) => {
             return { error: 'Unauthorized' };
         }
 
+        // if OAuth user dbUser.password is null
         if (user.isOAuth) {
             values.newPassword = undefined;
             values.confirmNewPassword = undefined;
             values.isTwoFactorEnabled = undefined;
         }
 
-        if (values.email && values.email !== dbUser.email) {
-            const existingUser = await getUserByEmail(values.email);
-
-            if (existingUser && existingUser.id !== user.id) {
-                return { error: 'Email already in use!' };
-            }
-
-            const verificationToken = await generateVerificationToken(values.email);
-
-            await sendVerificationEmail(
-                verificationToken.email,
-                verificationToken.token
+        // if not OAuth, dbUser.password is not null
+        if (dbUser.password) {
+            const passwordMatch = await bcrypt.compare(
+                values.password,
+                dbUser.password,
             );
 
-            return { success: 'Please confirm the verification email!' };
+            if (!passwordMatch) {
+                return { error: 'Current password is incorrect!' };
+            }
+
+            values.password = dbUser.password;
         }
+
+        if (values.password && values.newPassword && values.confirmNewPassword && dbUser.password) {
+            const hashedPassword = await bcrypt.hash(values.newPassword, 10);
+
+            values.password = hashedPassword;
+            values.newPassword = undefined;
+            values.confirmNewPassword = undefined;
+        }
+
+        // if (values.email && values.email !== dbUser.email) {
+        //     const existingUser = await getUserByEmail(values.email);
+
+        //     if (existingUser && existingUser.id !== user.id) {
+        //         return { error: 'Email already in use!' };
+        //     }
+
+        //     const verificationToken = await generateVerificationToken(values.email);
+
+        //     await sendVerificationEmail(
+        //         verificationToken.email,
+        //         verificationToken.token
+        //     );
+
+        //     return { success: 'Please confirm the verification email!' };
+        // }
 
         // send email confirm change password 7:25:00
         // update 7:30:00
@@ -58,6 +82,6 @@ export const settings = async (values: z.infer<typeof settingsSchema>) => {
 
         return { success: 'Settings updated!' };
     } catch (error) {
-        return { error: 'Something went wrong!' };
+        return { error: 'Cannot update because something went wrong!' };
     }
 };

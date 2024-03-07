@@ -31,6 +31,7 @@ const SettingsPage = () => {
             newPassword: undefined,
             confirmNewPassword: undefined,
             isTwoFactorEnabled: user?.isTwoFactorEnabled,
+            password: undefined,
         }
     }));
 
@@ -39,12 +40,13 @@ const SettingsPage = () => {
             try {
                 const res = await settings(values);
 
-                update();
+                update({});
 
                 if (res.error) {
                     setError(res.error);
                 } else if (res.success) {
                     setSuccess(res.success);
+                    setError(res.error);
                 }
             } catch {
                 setError('Something went wrong');
@@ -90,7 +92,7 @@ const SettingsPage = () => {
                                                     <Input 
                                                         {...field}
                                                         placeholder="Email"
-                                                        disabled={isPending}
+                                                        disabled={true}
                                                         type="email"
                                                     />
                                                 </FormControl>
@@ -150,6 +152,24 @@ const SettingsPage = () => {
                                                         disabled={isPending}
                                                         checked={field.value}
                                                         onCheckedChange={field.onChange}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Current Password</FormLabel>
+                                                <FormControl>
+                                                    <Input 
+                                                        {...field}
+                                                        placeholder="You need to enter your current password to change your information"
+                                                        disabled={isPending}
+                                                        type="password"
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
